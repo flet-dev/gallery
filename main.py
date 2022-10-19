@@ -3,8 +3,9 @@ from math import pi
 
 import flet
 from flet import Column, Icon, Page, Text, icons
-from playground.gallery.controls.collapsible import Collapsible
-from playground.gallery.controls.menu_button import MenuButton
+
+from controls.collapsible import Collapsible
+from controls.menu_button import MenuButton
 
 
 def main(page: Page):
