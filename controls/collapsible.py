@@ -1,8 +1,7 @@
 from math import pi
 from typing import Optional
 
-from flet import Column, Container, Icon, Row, Text, icons, padding
-from flet.control import Control
+from flet import Column, Container, Control, Icon, Row, Text, icons, padding
 
 
 class Collapsible(Column):

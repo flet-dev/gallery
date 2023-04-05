@@ -1,8 +1,7 @@
 from math import pi
 from typing import Optional
 
-from flet import Container, Icon, Row, Text, icons, padding
-from flet.control import Control
+from flet import Container, Control, Row, Text, padding
 
 
 class MenuButton(Container):
