@@ -34,7 +34,7 @@ class ControlGroup:
 
 
 @dataclass
-class GalleryData:
+class Gallery:
     control_groups: list[ControlGroup] = field(
         default_factory=lambda: [
             # ControlGroup(
@@ -124,7 +124,7 @@ class GalleryData:
         # return self.control_groups[0].grid_items[0]
 
     def list_control_dirs(self, dir):
-        file_path = os.path.join(str(Path(__file__).parent), "examples", dir)
+        file_path = os.path.join(str(Path(__file__).parent.parent), "examples", dir)
         control_dirs = [
             f
             for f in os.listdir(file_path)
@@ -135,7 +135,10 @@ class GalleryData:
 
     def list_example_files(self, control_group_dir, control_dir):
         file_path = os.path.join(
-            str(Path(__file__).parent), "examples", control_group_dir, control_dir
+            str(Path(__file__).parent.parent),
+            "examples",
+            control_group_dir,
+            control_dir,
         )
         example_files = [f for f in os.listdir(file_path) if not f.startswith("_")]
         return example_files
@@ -153,7 +156,7 @@ class GalleryData:
                         print(f"{module_name!r} already in sys.modules")
                     else:
                         file_path = os.path.join(
-                            str(Path(__file__).parent), "examples", file_name
+                            str(Path(__file__).parent.parent), "examples", file_name
                         )
 
                         spec = importlib.util.spec_from_file_location(

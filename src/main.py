@@ -3,11 +3,11 @@ import logging
 import flet as ft
 
 from components.app import App
-from gallerydata import GalleryData
+from models.gallery import Gallery
 
 logging.basicConfig(level=logging.INFO)
 
-gallery = GalleryData()
+gallery = Gallery()
 print(gallery)
 
 if __name__ == "__main__":

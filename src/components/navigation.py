@@ -1,7 +1,7 @@
 import flet as ft
 
 from contexts.theme import ThemeContext
-from gallerydata import ControlGroup
+from models.gallery import ControlGroup
 
 
 @ft.component

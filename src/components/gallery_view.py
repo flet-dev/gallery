@@ -2,11 +2,11 @@ import flet as ft
 
 from components.group_controls import GroupControls
 from components.navigation import Navigation
-from gallerydata import GalleryData
+from models.gallery import Gallery
 
 
 @ft.component
-def GalleryView(gallery: GalleryData):
+def GalleryView(gallery: Gallery):
     return ft.Row(
         expand=True,
         controls=[

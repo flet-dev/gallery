@@ -5,12 +5,12 @@ import flet as ft
 from components.app_bar import AppBar
 from components.gallery_view import GalleryView
 from contexts.theme import ThemeContext, ThemeContextValue
-from gallerydata import GalleryData
 from models.app_model import AppModel
+from models.gallery import Gallery
 
 
 @ft.component
-def App(gallery: GalleryData) -> list[ft.View]:
+def App(gallery: Gallery) -> list[ft.View]:
     app, _ = ft.use_state(AppModel(route=ft.context.page.route))
 
     # subscribe to page events as soon as possible
