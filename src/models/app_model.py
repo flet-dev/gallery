@@ -1,3 +1,4 @@
+import asyncio
 from dataclasses import dataclass
 
 import flet as ft
@@ -13,6 +14,11 @@ class AppModel:
     def route_change(self, e: ft.RouteChangeEvent):
         print("Route changed from:", self.route, "to:", e.route)
         self.route = e.route
+
+    def navigate(self, new_route: str):
+        if new_route != self.route:
+            print("Navigating to:", new_route)
+            asyncio.create_task(ft.context.page.push_route(new_route))
 
     async def view_popped(self, e: ft.ViewPopEvent):
         print("View popped")

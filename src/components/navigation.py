@@ -1,24 +1,32 @@
 import flet as ft
 
+from contexts.route import RouteContext
 from contexts.theme import ThemeContext
 from models.gallery import ControlGroup
 
 
 @ft.component
-def Groups(control_groups: list[ControlGroup]):
+def Group(group: ControlGroup, selected: bool):
+    route_context = ft.use_context(RouteContext)
+    return ft.Container(
+        ink=True,
+        padding=10,
+        border_radius=5,
+        bgcolor=ft.Colors.SECONDARY_CONTAINER if selected else ft.Colors.TRANSPARENT,
+        content=ft.Row([ft.Icon(group.icon), ft.Text(group.label)]),
+        on_click=lambda: route_context.navigate(f"/{group.name}"),
+    )
+
+
+@ft.component
+def Groups(control_groups: list[ControlGroup], selected_group: str | None):
     return ft.Column(
         expand=True,
         spacing=0,
         scroll=ft.ScrollMode.ALWAYS,
         width=200,
         controls=[
-            ft.Container(
-                ink=True,
-                padding=10,
-                border_radius=5,
-                content=ft.Row([ft.Icon(group.icon), ft.Text(group.label)]),
-                on_click=lambda e, name=group.name: print(f"Group {name} clicked"),
-            )
+            Group(group, selected=(group.name == selected_group))
             for group in control_groups
         ],
     )
@@ -93,10 +101,13 @@ def ThemeOptions():
 
 
 @ft.component
-def Navigation(control_groups: list[ControlGroup]):
+def Navigation(control_groups: list[ControlGroup], selected_group: str | None):
+    if not selected_group:
+        selected_group = control_groups[0].name if control_groups else None
+
     return ft.Column(
         controls=[
-            Groups(control_groups),
+            Groups(control_groups, selected_group),
             ThemeOptions(),
         ],
     )

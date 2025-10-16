@@ -1,23 +1,22 @@
-import asyncio
-
 import flet as ft
 
 from components.app_bar import AppBar
 from components.gallery_view import GalleryView
+from contexts.route import RouteContext, RouteContextValue
 from contexts.theme import ThemeContext, ThemeContextValue
 from models.app_model import AppModel
 from models.gallery import Gallery
 
 
 @ft.component
-def App(gallery: Gallery) -> list[ft.View]:
+def App(gallery: Gallery) -> ft.View:
     app, _ = ft.use_state(AppModel(route=ft.context.page.route))
 
     # subscribe to page events as soon as possible
     ft.context.page.on_route_change = app.route_change
     ft.context.page.on_view_pop = app.view_popped
 
-    # stable callback (doesn’t change identity each render)
+    # stable callbacks (don’t change identity each render)
     toggle_mode = ft.use_callback(
         lambda: app.toggle_theme(), dependencies=[app.theme_mode]
     )
@@ -36,9 +35,27 @@ def App(gallery: Gallery) -> list[ft.View]:
         dependencies=[app.theme_mode, app.theme_color, toggle_mode, set_theme_color],
     )
 
-    ft.on_mounted(
-        lambda: print("Page size:", ft.context.page.width, ft.context.page.height)
+    navigate_callback = ft.use_callback(
+        lambda new_route: app.navigate(new_route), dependencies=[app.route]
     )
+
+    route_value = ft.use_memo(
+        lambda: RouteContextValue(
+            route=app.route,
+            navigate=navigate_callback,
+        ),
+        dependencies=[app.route],
+    )
+
+    def on_mounted():
+        print("Page size:", ft.context.page.width, ft.context.page.height)
+        ft.context.page.title = "Flet controls gallery"
+        ft.context.page.fonts = {
+            "Roboto Mono": "RobotoMono-VariableFont_wght.ttf",
+            "RobotoSlab": "RobotoSlab[wght].ttf",
+        }
+
+    ft.on_mounted(on_mounted)
 
     def update_theme():
         print("Theme mode changed to:", app.theme_mode)
@@ -50,31 +67,14 @@ def App(gallery: Gallery) -> list[ft.View]:
 
     ft.on_updated(update_theme, [app.theme_mode, app.theme_color])
 
-    return ThemeContext(
-        theme_value,
-        lambda: [
-            ft.View(
+    return RouteContext(
+        route_value,
+        lambda: ThemeContext(
+            theme_value,
+            lambda: ft.View(
                 route="/",
                 appbar=AppBar(),
                 controls=[GalleryView(gallery)],
             ),
-            *(
-                [
-                    ft.View(
-                        route="/store",
-                        appbar=AppBar(),
-                        controls=[
-                            ft.Button(
-                                "Go Home",
-                                on_click=lambda _: asyncio.create_task(
-                                    ft.context.page.push_route("/")
-                                ),
-                            ),
-                        ],
-                    )
-                ]
-                if app.route == "/store"
-                else []
-            ),
-        ],
+        ),
     )

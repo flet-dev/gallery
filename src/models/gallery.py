@@ -1,5 +1,6 @@
 import importlib.util
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import ClassVar
@@ -12,13 +13,13 @@ class ExampleItem:
     name: str | None = None
     file_name: str | None = None
     order: int | None = None
-    example: ft.Control | None = None
+    example: Callable | None = None
 
 
 @dataclass
-class GridItem:
+class ControlItem:
     id: str
-    name: str | None = None
+    name: str
     examples: list[ExampleItem] = field(default_factory=list)
     description: str | None = None
 
@@ -29,7 +30,7 @@ class ControlGroup:
     label: str
     icon: ft.IconData
     selected_icon: ft.IconData
-    grid_items: list[GridItem] = field(default_factory=list)
+    controls: list[ControlItem] = field(default_factory=list)
 
 
 @dataclass
@@ -117,25 +118,17 @@ class Gallery:
         self._examples_root = Path(__file__).resolve().parent.parent / "examples"
         self.import_modules()
 
-    def get_control_group(self, control_group_name: str) -> ControlGroup | None:
-        for control_group in self.control_groups:
-            if control_group.name == control_group_name:
-                return control_group
-        return None
+    def get_control_group(self, group_name: str) -> ControlGroup | None:
+        return next((g for g in self.control_groups if g.name == group_name), None)
 
-    def get_control(
-        self, control_group_name: str, control_name: str
-    ) -> GridItem | None:
-        control_group = self.get_control_group(control_group_name)
+    def get_control(self, group_name: str, control_id: str) -> ControlItem | None:
+        control_group = self.get_control_group(group_name)
         if not control_group:
             return None
-        for grid_item in control_group.grid_items:
-            if grid_item.id == control_name:
-                return grid_item
-        return None
+        return next((c for c in control_group.controls if c.id == control_id), None)
 
-    def list_control_dirs(self, control_group_name: str) -> list[str]:
-        base_path = self._examples_root / control_group_name
+    def list_control_dirs(self, group_name: str) -> list[str]:
+        base_path = self._examples_root / group_name
         if not base_path.exists():
             return []
         return sorted(
@@ -158,16 +151,14 @@ class Gallery:
 
     def import_modules(self) -> None:
         for control_group in self.control_groups:
-            control_group.grid_items.clear()
+            control_group.controls.clear()
             for control_dir in self.list_control_dirs(control_group.name):
                 grid_item = self._build_grid_item(control_group.name, control_dir)
-                control_group.grid_items.append(grid_item)
-            control_group.grid_items.sort(
-                key=lambda item: (item.name or item.id).lower()
-            )
+                control_group.controls.append(grid_item)
+            control_group.controls.sort(key=lambda item: (item.name or item.id).lower())
 
-    def _build_grid_item(self, group_name: str, control_dir: str) -> GridItem:
-        grid_item = GridItem(id=control_dir)
+    def _build_grid_item(self, group_name: str, control_dir: str) -> ControlItem:
+        grid_item = ControlItem(id=control_dir, name=control_dir)
         for file_path in self.list_example_files(group_name, control_dir):
             module = self._import_module(file_path)
             if file_path.name == self._INDEX_FILE_NAME:
