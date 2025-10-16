@@ -1,29 +1,14 @@
 import logging
 
 import flet as ft
-import flet.version
 
+from components.app import App
 from gallerydata import GalleryData
-
-gallery = GalleryData()
 
 logging.basicConfig(level=logging.INFO)
 
-ft.context.disable_auto_update()
-
+gallery = GalleryData()
 print(gallery)
 
-
-@ft.component
-def App():
-    count, set_count = ft.use_state(0)
-
-    return ft.Row(
-        [
-            ft.Text(value=f"{count}"),
-            ft.Button("Add", on_click=lambda: set_count(count + 1)),
-        ],
-    )
-
-
-ft.run(lambda page: page.render(App))
+if __name__ == "__main__":
+    ft.run(lambda page: page.render_views(lambda: App(gallery)))
