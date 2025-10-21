@@ -8,19 +8,15 @@ def example():
 
     return ft.Column(
         [
-            ft.Column(
-                [
-                    ft.Text("Spacing between items"),
-                    ft.Slider(
-                        min=0,
-                        max=100,
-                        divisions=10,
-                        value=value,
-                        label="{value}",
-                        width=500,
-                        on_change=lambda e: set_value(e.control.value),
-                    ),
-                ]
+            ft.Text("Spacing between items"),
+            ft.Slider(
+                min=0,
+                max=100,
+                divisions=10,
+                value=value,
+                label="{value}",
+                width=500,
+                on_change=lambda e: set_value(e.control.value),
             ),
             ft.Column(
                 spacing=int(value),

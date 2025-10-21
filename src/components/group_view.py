@@ -2,16 +2,16 @@ import flet as ft
 
 from contexts.route import RouteContext
 from models.gallery import ControlGroup, ControlItem
-from utils.route import Route
 
 
 @ft.component
-def ControlItemView(control_item: ControlItem):
+def ControlItemView(control_item: ControlItem, group_name: str):
     route_context = ft.use_context(RouteContext)
 
     def grid_item_clicked(e):
-        route = Route(route_context.route)
-        route_context.navigate(f"/{route.group}/{control_item.id}")
+        # use the provided group_name (the currently displayed group)
+        # instead of relying on the RouteContext which can be '/' (no group)
+        route_context.navigate(f"/{group_name}/{control_item.id}")
 
     # return ft.Container(
     #     on_click=grid_item_clicked,
@@ -70,7 +70,7 @@ def GroupView(group: ControlGroup):
         spacing=10,
         padding=10,
         controls=[
-            ControlItemView(control_item=control_item)
+            ControlItemView(control_item=control_item, group_name=group.name)
             for control_item in group.controls
         ],
     )
