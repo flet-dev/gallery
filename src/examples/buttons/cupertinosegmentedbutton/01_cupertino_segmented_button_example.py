@@ -1,9 +1,10 @@
 import flet as ft
 
-name = "CupertinoSegmentedButton"
+name = "CupertinoSegmentedButton example"
 
 
 def example():
+
     return ft.CupertinoSegmentedButton(
         selected_index=1,
         selected_color=ft.Colors.RED_400,

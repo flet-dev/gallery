@@ -4,10 +4,10 @@ name = "CupertinoButton"
 
 
 def example():
-    button = ft.CupertinoButton(
-        content=ft.Text("CupertinoButton"),
-        opacity_on_click=0.3,
-        on_click=lambda e: print("Normal CupertinoButton clicked!"),
+    return ft.Column(
+        controls=[
+            ft.CupertinoButton("CupertinoButton"),
+            ft.CupertinoButton("Disabled button", disabled=True),
+            ft.CupertinoButton("Button with icon", icon=ft.Icons.ADD),
+        ]
     )
-
-    return button
