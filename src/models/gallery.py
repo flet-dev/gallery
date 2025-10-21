@@ -10,7 +10,7 @@ import flet as ft
 
 @dataclass
 class ExampleItem:
-    name: str | None = None
+    name: str = ""
     file_name: str | None = None
     order: int | None = None
     example: Callable | None = None
@@ -167,7 +167,7 @@ class Gallery:
                 continue
 
             example_item = ExampleItem(
-                name=getattr(module, "name", None),
+                name=getattr(module, "name"),
                 file_name=str(file_path.relative_to(self._examples_root).as_posix()),
                 order=self._parse_example_order(file_path.name),
                 example=getattr(module, "example", None),

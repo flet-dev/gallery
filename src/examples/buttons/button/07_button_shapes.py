@@ -6,31 +6,31 @@ name = "ElevatedButtons of different shapes"
 def example():
     return ft.Column(
         controls=[
-            ft.ElevatedButton(
+            ft.Button(
                 "Stadium",
                 style=ft.ButtonStyle(
                     shape=ft.StadiumBorder(),
                 ),
             ),
-            ft.ElevatedButton(
+            ft.Button(
                 "Rounded rectangle",
                 style=ft.ButtonStyle(
                     shape=ft.RoundedRectangleBorder(radius=10),
                 ),
             ),
-            ft.ElevatedButton(
+            ft.Button(
                 "Continuous rectangle",
                 style=ft.ButtonStyle(
                     shape=ft.ContinuousRectangleBorder(radius=30),
                 ),
             ),
-            ft.ElevatedButton(
+            ft.Button(
                 "Beveled rectangle",
                 style=ft.ButtonStyle(
                     shape=ft.BeveledRectangleBorder(radius=10),
                 ),
             ),
-            ft.ElevatedButton(
+            ft.Button(
                 "Circle",
                 style=ft.ButtonStyle(shape=ft.CircleBorder(), padding=30),
             ),
