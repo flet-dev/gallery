@@ -4,37 +4,21 @@ name = "Infinite scroll list"
 
 
 def example():
-    import threading
-
-    class State:
-        i = 0
-
-    s = State()
-    sem = threading.Semaphore()
+    items, set_items = ft.use_state(lambda: list(range(50)))
 
     def on_scroll(e: ft.OnScrollEvent):
         if e.pixels >= e.max_scroll_extent - 100:
-            if sem.acquire(blocking=False):
-                try:
-                    for i in range(0, 10):
-                        cl.controls.append(
-                            ft.Text(f"Text line {s.i}", key=str(s.i))
-                        )
-                        s.i += 1
-                    cl.update()
-                finally:
-                    sem.release()
+            set_items(items + list(range(len(items), len(items) + 10)))
 
-    cl = ft.Column(
-        spacing=10,
-        height=200,
-        width=200,
-        scroll=ft.ScrollMode.ALWAYS,
-        scroll_interval=0,
-        on_scroll=on_scroll,
+    return ft.Container(
+        ft.Column(
+            spacing=10,
+            height=200,
+            width=200,
+            scroll=ft.ScrollMode.ALWAYS,
+            scroll_interval=0,
+            on_scroll=on_scroll,
+            controls=[ft.Text(f"Text line {item}", key=str(item)) for item in items],
+        ),
+        border=ft.Border.all(1),
     )
-    for i in range(0, 50):
-        cl.controls.append(ft.Text(f"Text line {s.i}", key=str(s.i)))
-        s.i += 1
-
-    return ft.Container(cl, border=ft.Border.all(1))
