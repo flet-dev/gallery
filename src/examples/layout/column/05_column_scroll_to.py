@@ -1,22 +1,24 @@
+from typing import cast
+
 import flet as ft
 
 name = "Controlling scroll position for Column"
 
 
 def example():
-    cl = ft.Ref[ft.Column]()
+    cl = ft.Ref[ft.BaseControl]()
 
     async def scroll_to_a(_):
-        await cl.current.scroll_to(scroll_key="A", duration=1000)
+        await cast(ft.Column, cl.current).scroll_to(scroll_key="A", duration=1000)
 
     async def scroll_to_b(_):
-        await cl.current.scroll_to(scroll_key="B", duration=1000)
+        await cast(ft.Column, cl.current).scroll_to(scroll_key="B", duration=1000)
 
     async def scroll_to_c(_):
-        await cl.current.scroll_to(scroll_key="C", duration=1000)
+        await cast(ft.Column, cl.current).scroll_to(scroll_key="C", duration=1000)
 
     async def scroll_to_d(_):
-        await cl.current.scroll_to(scroll_key="D", duration=1000)
+        await cast(ft.Column, cl.current).scroll_to(scroll_key="D", duration=1000)
 
     return ft.Column(
         [
