@@ -36,6 +36,7 @@ def Example(example: ExampleItem):
                 border_radius=5,
             ),
             ft.Container(
+                margin=ft.margin.only(top=20, bottom=20),
                 content=example.example(),
                 clip_behavior=ft.ClipBehavior.NONE,
             )

@@ -1,6 +1,6 @@
 import flet as ft
 
-name = "CupertinoButton example"
+name = "CupertinoButton"
 
 
 def example():

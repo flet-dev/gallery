@@ -6,7 +6,7 @@ name = (
 
 
 def example():
-    return ft.ElevatedButton(
+    return ft.Button(
         "Styled button 1",
         style=ft.ButtonStyle(
             color={

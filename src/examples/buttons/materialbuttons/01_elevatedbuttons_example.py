@@ -1,6 +1,6 @@
 import flet as ft
 
-name = "Basic Buttons"
+name = "Button (ElevatedButton)"
 
 
 def example():
@@ -8,5 +8,6 @@ def example():
         controls=[
             ft.Button(content="Button"),
             ft.Button("Disabled button", disabled=True),
+            ft.Button("Button with icon", icon=ft.Icons.ADD),
         ]
     )
