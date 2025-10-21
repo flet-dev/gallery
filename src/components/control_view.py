@@ -15,7 +15,7 @@ def Example(example: ExampleItem):
                             example.name,
                             theme_style=ft.TextThemeStyle.TITLE_MEDIUM,
                             weight=ft.FontWeight.W_500,
-                            margin=ft.margin.only(left=5),
+                            margin=ft.Margin.only(left=5),
                         ),
                         ft.IconButton(
                             icon=ft.Image(
@@ -36,7 +36,7 @@ def Example(example: ExampleItem):
                 border_radius=5,
             ),
             ft.Container(
-                margin=ft.margin.only(top=20, bottom=20),
+                margin=ft.Margin.only(top=20, bottom=20),
                 content=example.example(),
                 clip_behavior=ft.ClipBehavior.NONE,
             )
