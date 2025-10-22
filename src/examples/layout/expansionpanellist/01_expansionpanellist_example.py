@@ -25,7 +25,7 @@ def example():
         ]
         + [
             ft.ExpansionPanel(
-                key=i,  # for optimization
+                key=i,  # for correct difference calculation
                 bgcolor=color,
                 content=ft.ListTile(
                     title=ft.Text(f"This is in Panel {i}"),
