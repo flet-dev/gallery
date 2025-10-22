@@ -4,20 +4,19 @@ import flet as ft
 
 name = "Auto-scrolling ListView"
 
+items: list[int] = list(range(60))
+
 
 def example():
     items, set_items = ft.use_state(list(range(60)))
 
     async def auto_scroll(e):
         # count = 1
-        cur = items.copy()
         for i in range(61, 120):
             await asyncio.sleep(1)
 
             # lv.controls.append(ft.Text(f"Line {count}"))
-            # set_items(items + [i])
-            set_items(cur + [i])
-            cur = items.copy()
+            set_items(items + [i])
             print(f"Cur: {cur}")
 
             print(f"Items: {items}")
