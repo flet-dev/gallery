@@ -49,7 +49,7 @@ def example():
                 item.x2,
                 item.y2,
                 paint=ft.Paint(stroke_width=3),
-                key=item.index,
+                # key=item.index,
             )
             for item in items
         ],
