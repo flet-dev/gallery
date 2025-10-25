@@ -30,6 +30,7 @@ def example():
             lambda cur: cur
             + [Item(last_pos[0], last_pos[1], e.local_position.x, e.local_position.y)]
         )
+        print(f"Pan update, items: {items}")
         set_last_pos((e.local_position.x, e.local_position.y))
 
     cp = cv.Canvas(
@@ -43,16 +44,20 @@ def example():
             ),
         ]
         + [
-            cv.Line(
-                item.x1,
-                item.y1,
-                item.x2,
-                item.y2,
-                paint=ft.Paint(stroke_width=3),
-                # key=item.index,
-            )
+            cv.Line(item.x1, item.y1, item.x2, item.y2, paint=ft.Paint())
             for item in items
         ],
+        # + [
+        #     cv.Line(
+        #         item.x1,
+        #         item.y1,
+        #         item.x2,
+        #         item.y2,
+        #         paint=ft.Paint(stroke_width=3),
+        #         # key=item.index,
+        #     )
+        #     for item in items
+        # ],
         content=ft.GestureDetector(
             on_pan_start=pan_start,
             on_pan_update=pan_update,
