@@ -1,16 +1,21 @@
+from dataclasses import dataclass, field
+
 import flet as ft
 
 name = "Free-hand drawing tool"
 
+TaskID = ft.IdCounter()
 
-# @ft.observable
-# @dataclass
+
+@ft.observable
+@dataclass
 class Item:
     def __init__(self, x1: float, y1: float, x2: float, y2: float):
         self.x1 = float(x1)
         self.y1 = float(y1)
         self.x2 = float(x2)
         self.y2 = float(y2)
+        self.id: int = field(default_factory=TaskID)
 
 
 def example():
@@ -20,17 +25,13 @@ def example():
     last_pos, set_last_pos = ft.use_state((None, None))
 
     def pan_start(e: ft.DragStartEvent):
-        # state.x = e.local_x
-        # state.y = e.local_y
         set_last_pos((e.local_position.x, e.local_position.y))
-        print(f"Pan start at: {e.local_position.x}, {e.local_position.y}")
 
     def pan_update(e: ft.DragUpdateEvent):
         set_items(
             lambda cur: cur
             + [Item(last_pos[0], last_pos[1], e.local_position.x, e.local_position.y)]
         )
-        print(f"Pan update, items: {items}")
         set_last_pos((e.local_position.x, e.local_position.y))
 
     cp = cv.Canvas(
@@ -44,20 +45,16 @@ def example():
             ),
         ]
         + [
-            cv.Line(item.x1, item.y1, item.x2, item.y2, paint=ft.Paint())
+            cv.Line(
+                item.x1,
+                item.y1,
+                item.x2,
+                item.y2,
+                paint=ft.Paint(stroke_width=3),
+                key=item.id,
+            )
             for item in items
         ],
-        # + [
-        #     cv.Line(
-        #         item.x1,
-        #         item.y1,
-        #         item.x2,
-        #         item.y2,
-        #         paint=ft.Paint(stroke_width=3),
-        #         # key=item.index,
-        #     )
-        #     for item in items
-        # ],
         content=ft.GestureDetector(
             on_pan_start=pan_start,
             on_pan_update=pan_update,
