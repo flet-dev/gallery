@@ -53,6 +53,11 @@ def example():
             set_items([])
 
     ft.on_updated(on_updated)
+
+    async def clear_canvas():
+        await canvas.current.clear_capture()
+        set_items([])
+
     cp = cv.Canvas(
         ref=canvas,
         shapes=[
@@ -76,7 +81,7 @@ def example():
 
     return ft.Column(
         controls=[
-            ft.Button("Clear", on_click=lambda e: set_items([])),
+            ft.Button("Clear", on_click=clear_canvas),
             ft.Container(
                 cp,
                 border=ft.Border.all(2, ft.Colors.BLACK54),
