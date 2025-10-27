@@ -74,11 +74,16 @@ def example():
         expand=False,
     )
 
-    return ft.Container(
-        cp,
-        border=ft.Border.all(2, ft.Colors.BLACK54),
-        border_radius=5,
-        bgcolor=ft.Colors.SURFACE_CONTAINER,
-        width=500,
-        height=500,
+    return ft.Column(
+        controls=[
+            ft.Button("Clear", on_click=lambda e: set_items([])),
+            ft.Container(
+                cp,
+                border=ft.Border.all(2, ft.Colors.BLACK54),
+                border_radius=5,
+                bgcolor=ft.Colors.SURFACE_CONTAINER,
+                width=500,
+                height=500,
+            ),
+        ]
     )
