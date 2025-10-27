@@ -4,25 +4,31 @@ name = "Assist chips"
 
 
 def example():
-    def save_to_favorites_clicked(e):
-        save_to_favourites.label.value = "Saved to favorites"
-        save_to_favourites.leading = ft.Icon(ft.Icons.FAVORITE_OUTLINED)
-        save_to_favourites.disabled = True
-        save_to_favourites.update()
+    saved_to_favourites, set_saved_to_favourites = ft.use_state(False)
 
-    def open_google_maps(e):
-        e.control.page.launch_url("https://maps.google.com")
+    async def open_google_maps(e):
+        await e.control.page.launch_url("https://maps.google.com")
 
-    save_to_favourites = ft.Chip(
-        label=ft.Text("Save to favourites"),
-        leading=ft.Icon(ft.Icons.FAVORITE_BORDER_OUTLINED),
-        on_click=save_to_favorites_clicked,
+    return ft.Row(
+        [
+            ft.Chip(
+                label=ft.Text(
+                    "Save to favourites"
+                    if not saved_to_favourites
+                    else "Saved to favourites"
+                ),
+                leading=ft.Icon(
+                    ft.Icons.FAVORITE_BORDER_OUTLINED
+                    if not saved_to_favourites
+                    else ft.Icons.FAVORITE_OUTLINED
+                ),
+                disabled=saved_to_favourites,
+                on_click=lambda e: set_saved_to_favourites(True),
+            ),
+            ft.Chip(
+                label=ft.Text("9 min walk"),
+                leading=ft.Icon(ft.Icons.MAP_SHARP),
+                on_click=open_google_maps,
+            ),
+        ]
     )
-
-    open_in_maps = ft.Chip(
-        label=ft.Text("9 min walk"),
-        leading=ft.Icon(ft.Icons.MAP_SHARP),
-        on_click=open_google_maps,
-    )
-
-    return ft.Row([save_to_favourites, open_in_maps])
