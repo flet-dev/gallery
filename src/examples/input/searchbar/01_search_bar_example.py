@@ -35,7 +35,7 @@ def example():
     return ft.Column(
         controls=[
             ft.Row(
-                alignment=ft.MainAxisAlignment.CENTER,
+                alignment=ft.MainAxisAlignment.START,
                 controls=[
                     ft.OutlinedButton(
                         "Open Search View",
@@ -44,5 +44,5 @@ def example():
                 ],
             ),
             anchor,
-        ]
+        ],
     )
