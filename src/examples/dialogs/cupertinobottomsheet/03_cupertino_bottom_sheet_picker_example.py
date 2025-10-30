@@ -4,8 +4,7 @@ name = "CupertinoBottomSheet with CupertinoPicker Example"
 
 
 def example():
-
-    selected_fruit_ref = ft.Ref[ft.Text]()
+    selected_index, set_selected_index = ft.use_state(3)
 
     fruits = [
         "Apple",
@@ -17,18 +16,17 @@ def example():
     ]
 
     def handle_picker_change(e):
-        selected_fruit_ref.current.value = fruits[int(e.data)]
-        # e.control.page.update()
+        set_selected_index(e.control.selected_index)
 
     picker = ft.CupertinoPicker(
-        selected_index=3,
+        selected_index=selected_index,
         # item_extent=40,
         magnification=1.22,
         # diameter_ratio=2,
         squeeze=1.2,
         use_magnifier=True,
         # looping=False,
-        on_change=handle_picker_change,
+        on_change=lambda e: set_selected_index(e.control.selected_index),
         controls=[ft.Text(f) for f in fruits],
     )
 
@@ -37,7 +35,10 @@ def example():
         controls=[
             ft.Text("Selected Fruit:", size=23),
             ft.TextButton(
-                content=ft.Text(fruits[3], size=23, ref=selected_fruit_ref),
+                content=ft.Text(
+                    fruits[selected_index],
+                    size=23,
+                ),
                 style=ft.ButtonStyle(color=ft.Colors.BLUE),
                 on_click=lambda e: e.control.page.show_dialog(
                     ft.CupertinoBottomSheet(

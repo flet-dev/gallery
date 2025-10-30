@@ -6,7 +6,6 @@ name = "CupertinoBottomSheet with CupertinoTimerPicker Example"
 
 
 def example():
-
     timer_picker_value_ref = ft.Ref[ft.Text]()
 
     def handle_timer_picker_change(e):
