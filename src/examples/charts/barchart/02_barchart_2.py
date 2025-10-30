@@ -1,77 +1,77 @@
+from dataclasses import dataclass, field
+
 import flet as ft
 import flet_charts as fch
 
 name = "BarChart 2"
 
 
-def example():
-    class SampleRod(fch.BarChartRod):
-        def __init__(self, y: float, hovered: bool = False):
-            super().__init__()
-            self.hovered = hovered
-            self.y = y
-            # self.tooltip = f"{self.y}"
-            self.width = 22
-            self.color = ft.Colors.WHITE
-            self.bg_to_y = 20
-            self.bg_color = ft.Colors.GREEN_300
+@dataclass
+@ft.observable
+class BarData:
+    x: int
+    y: float
+    axis_label: str
+    hovered: bool = False
 
-        def before_update(self):
-            self.to_y = self.y + 0.5 if self.hovered else self.y
-            self.color = ft.Colors.YELLOW if self.hovered else ft.Colors.WHITE
-            self.border_side = (
-                ft.BorderSide(width=1, color=ft.Colors.GREEN_400)
-                if self.hovered
-                else ft.BorderSide(width=0, color=ft.Colors.WHITE)
-            )
-            super().before_update()
+
+@dataclass
+@ft.observable
+class ChartData:
+    bars: list[BarData] = field(default_factory=list)
+
+
+def example():
+    chart_data, _ = ft.use_state(
+        ChartData(
+            bars=[
+                BarData(x=0, y=5, axis_label="M"),
+                BarData(x=1, y=6.5, axis_label="T"),
+                BarData(x=2, y=15, axis_label="W"),
+                BarData(x=3, y=7.5, axis_label="T"),
+                BarData(x=4, y=9, axis_label="F"),
+                BarData(x=5, y=11.5, axis_label="S"),
+                BarData(x=6, y=6, axis_label="S"),
+            ]
+        )
+    )
 
     def on_chart_event(e: fch.BarChartEvent):
-        for group_index, group in enumerate(chart.groups):
-            for rod_index, rod in enumerate(group.rods):
-                rod.hovered = e.group_index == group_index and e.rod_index == rod_index
-        # chart.update()
+        for i, bar in enumerate(chart_data.bars):
+            bar.hovered = i == e.group_index
+        chart_data.notify()
 
     chart = fch.BarChart(
         groups=[
             fch.BarChartGroup(
-                x=0,
-                rods=[SampleRod(5)],
-            ),
-            fch.BarChartGroup(
-                x=1,
-                rods=[SampleRod(6.5)],
-            ),
-            fch.BarChartGroup(
-                x=2,
-                rods=[SampleRod(15)],
-            ),
-            fch.BarChartGroup(
-                x=3,
-                rods=[SampleRod(7.5)],
-            ),
-            fch.BarChartGroup(
-                x=4,
-                rods=[SampleRod(9)],
-            ),
-            fch.BarChartGroup(
-                x=5,
-                rods=[SampleRod(11.5)],
-            ),
-            fch.BarChartGroup(
-                x=6,
-                rods=[SampleRod(6)],
-            ),
+                x=bar.x,
+                rods=[
+                    fch.BarChartRod(
+                        to_y=bar.y + 0.5 if bar.hovered else bar.y,
+                        bg_to_y=20,
+                        width=22,
+                        color=ft.Colors.YELLOW if bar.hovered else ft.Colors.WHITE,
+                        bgcolor=ft.Colors.GREEN_300,
+                        border_side=(
+                            ft.BorderSide(width=1, color=ft.Colors.GREEN_400)
+                            if bar.hovered
+                            else ft.BorderSide(width=0, color=ft.Colors.WHITE)
+                        ),
+                    )
+                ],
+            )
+            for bar in chart_data.bars
         ],
         bottom_axis=fch.ChartAxis(
             labels=[
-                fch.ChartAxisLabel(value=0, label=ft.Text("M")),
-                fch.ChartAxisLabel(value=1, label=ft.Text("T")),
-                fch.ChartAxisLabel(value=2, label=ft.Text("W")),
-                fch.ChartAxisLabel(value=3, label=ft.Text("T")),
-                fch.ChartAxisLabel(value=4, label=ft.Text("F")),
-                fch.ChartAxisLabel(value=5, label=ft.Text("S")),
-                fch.ChartAxisLabel(value=6, label=ft.Text("S")),
+                fch.ChartAxisLabel(
+                    value=bar.x,
+                    label=ft.Text(
+                        bar.axis_label,
+                        color=ft.Colors.BLUE if i % 2 == 0 else ft.Colors.YELLOW,
+                    ),
+                )
+                for i, bar in enumerate(chart_data.bars)
             ],
         ),
         on_event=on_chart_event,
@@ -87,7 +87,3 @@ def example():
         width=700,
         height=400,
     )
-
-    # return ft.Container(
-    #         chart, bgcolor=ft.Colors.GREEN_200, padding=10, border_radius=5, expand=True
-    #     )
