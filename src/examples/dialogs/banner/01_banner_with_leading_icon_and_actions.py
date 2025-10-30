@@ -20,7 +20,6 @@ def example():
         ],
     )
 
-    def show_banner_click(e):
-        e.control.page.show_dialog(banner)
-
-    return ft.ElevatedButton("Show Banner", on_click=show_banner_click)
+    return ft.Button(
+        "Show Banner", on_click=lambda e: e.control.page.show_dialog(banner)
+    )
