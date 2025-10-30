@@ -15,9 +15,6 @@ def example():
         "Strawberry",
     ]
 
-    def handle_picker_change(e):
-        set_selected_index(e.control.selected_index)
-
     picker = ft.CupertinoPicker(
         selected_index=selected_index,
         # item_extent=40,
