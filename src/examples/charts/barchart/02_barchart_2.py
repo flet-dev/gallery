@@ -16,11 +16,27 @@ class BarData:
 
 
 @dataclass
-@ft.observable
 class ChartData:
     bars: list[BarData] = field(default_factory=list)
 
 
+@ft.component
+def BarChartRod(bar: BarData) -> fch.BarChartRod:
+    return fch.BarChartRod(
+        to_y=bar.y + 0.5 if bar.hovered else bar.y,
+        bg_to_y=20,
+        width=22,
+        color=ft.Colors.YELLOW if bar.hovered else ft.Colors.WHITE,
+        bgcolor=ft.Colors.GREEN_300,
+        border_side=(
+            ft.BorderSide(width=1, color=ft.Colors.GREEN_400)
+            if bar.hovered
+            else ft.BorderSide(width=0, color=ft.Colors.WHITE)
+        ),
+    )
+
+
+@ft.component
 def example():
     chart_data, _ = ft.use_state(
         ChartData(
@@ -39,25 +55,13 @@ def example():
     def on_chart_event(e: fch.BarChartEvent):
         for i, bar in enumerate(chart_data.bars):
             bar.hovered = i == e.group_index
-        chart_data.notify()
 
     chart = fch.BarChart(
         groups=[
             fch.BarChartGroup(
                 x=bar.x,
                 rods=[
-                    fch.BarChartRod(
-                        to_y=bar.y + 0.5 if bar.hovered else bar.y,
-                        bg_to_y=20,
-                        width=22,
-                        color=ft.Colors.YELLOW if bar.hovered else ft.Colors.WHITE,
-                        bgcolor=ft.Colors.GREEN_300,
-                        border_side=(
-                            ft.BorderSide(width=1, color=ft.Colors.GREEN_400)
-                            if bar.hovered
-                            else ft.BorderSide(width=0, color=ft.Colors.WHITE)
-                        ),
-                    )
+                    BarChartRod(bar=bar),
                 ],
             )
             for bar in chart_data.bars
