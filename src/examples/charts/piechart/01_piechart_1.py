@@ -1,50 +1,57 @@
+from dataclasses import dataclass, field
+
 import flet as ft
 import flet_charts as fch
 
 name = "PieChart 1"
 
+normal_border = ft.BorderSide(0, ft.Colors.with_opacity(0, ft.Colors.WHITE))
+hovered_border = ft.BorderSide(6, ft.Colors.WHITE)
 
+
+@dataclass
+@ft.observable
+class SectionData:
+    value: int
+    radius: int
+    color: ft.ColorValue
+    hovered: bool = False
+
+
+@dataclass
+class ChartData:
+    sections: list[SectionData] = field(default_factory=list)
+
+
+@ft.component
+def PieChartSection(section: SectionData) -> fch.PieChartSection:
+    return fch.PieChartSection(
+        section.value,
+        color=section.color,
+        radius=section.radius + 10 if section.hovered else section.radius,
+        border_side=hovered_border if section.hovered else normal_border,
+    )
+
+
+@ft.component
 def example():
-    section_index, set_section_index = ft.use_state(-1)
+    chart_data, _ = ft.use_state(
+        ChartData(
+            sections=[
+                SectionData(value=25, radius=80, color=ft.Colors.BLUE),
+                SectionData(value=25, radius=65, color=ft.Colors.YELLOW),
+                SectionData(value=25, radius=60, color=ft.Colors.PINK),
+                SectionData(value=25, radius=70, color=ft.Colors.GREEN),
+            ]
+        )
+    )
 
-    normal_border = ft.BorderSide(0, ft.Colors.with_opacity(0, ft.Colors.WHITE))
-    hovered_border = ft.BorderSide(6, ft.Colors.WHITE)
-
-    def on_chart_event(e: fch.PieChartEvent):
-        set_section_index(e.section_index)
-        # for idx, section in enumerate(chart.sections):
-        #     section.border_side = (
-        #         hovered_border if idx == e.section_index else normal_border
-        #     )
-        # chart.update()
+    def on_chart_event(e):
+        for idx, section in enumerate(chart_data.sections):
+            section.hovered = idx == e.section_index
 
     chart = fch.PieChart(
-        sections=[
-            fch.PieChartSection(
-                value=25,
-                color=ft.Colors.BLUE,
-                radius=80,
-                border_side=normal_border if ??? else hovered_border,
-            ),
-            fch.PieChartSection(
-                value=25,
-                color=ft.Colors.YELLOW,
-                radius=65,
-                border_side=normal_border,
-            ),
-            fch.PieChartSection(
-                value=25,
-                color=ft.Colors.PINK,
-                radius=60,
-                border_side=normal_border,
-            ),
-            fch.PieChartSection(
-                value=25,
-                color=ft.Colors.GREEN,
-                radius=70,
-                border_side=normal_border,
-            ),
-        ],
+        sections=[PieChartSection(section=section) for section in chart_data.sections],
         sections_space=1,
         center_space_radius=0,
         on_event=on_chart_event,
