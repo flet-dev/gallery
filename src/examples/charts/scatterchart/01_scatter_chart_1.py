@@ -11,6 +11,7 @@ name = "ScatterChart 1"
 class MySpot:
     x: float
     y: float
+    radius: float = 8.0
 
 
 flutter_logo_spots = [
@@ -104,6 +105,7 @@ def get_random_spots():
         MySpot(
             x=random.uniform(4, 50),
             y=random.uniform(4, 50),
+            radius=random.uniform(4, 20),
         )
         for _ in range(len(flutter_logo_spots))
     ]
@@ -115,40 +117,45 @@ def example():
 
     def handle_event(e: fch.ScatterChartEvent):
         if e.type == fch.ChartEventType.TAP_DOWN:
-            # set_spots(
-            #     flutter_logo_spots
-            #     if (e.control.spots != flutter_logo_spots)
-            #     else get_random_spots()
-            # )
-            print("Tapped down at:")
-            set_spots(lambda _: get_random_spots())
-
-    return fch.ScatterChart(
-        expand=True,
-        aspect_ratio=1.0,
-        min_x=0.0,
-        max_x=50.0,
-        min_y=0.0,
-        max_y=50.0,
-        left_axis=fch.ChartAxis(show_labels=False),
-        right_axis=fch.ChartAxis(show_labels=False),
-        top_axis=fch.ChartAxis(show_labels=False),
-        bottom_axis=fch.ChartAxis(show_labels=False),
-        show_tooltips_for_selected_spots_only=False,
-        on_event=handle_event,
-        animation=ft.Animation(
-            duration=ft.Duration(milliseconds=600),
-            curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
-        ),
-        spots=[
-            fch.ScatterChartSpot(
-                x=spot.x,
-                y=spot.y,
-                radius=8.0,
-                color=ft.Colors.random(),
-                show_tooltip=True,
-                selected=True if spot.x == 43 else False,
+            set_spots(
+                flutter_logo_spots
+                if (spots != flutter_logo_spots)
+                else get_random_spots()
             )
-            for spot in spots
-        ],
+
+    return ft.Column(
+        [
+            ft.Text(
+                "Tap on the chart to toggle between random spots and Flutter logo spots."
+            ),
+            fch.ScatterChart(
+                expand=True,
+                aspect_ratio=1.0,
+                min_x=0.0,
+                max_x=50.0,
+                min_y=0.0,
+                max_y=50.0,
+                left_axis=fch.ChartAxis(show_labels=False),
+                right_axis=fch.ChartAxis(show_labels=False),
+                top_axis=fch.ChartAxis(show_labels=False),
+                bottom_axis=fch.ChartAxis(show_labels=False),
+                show_tooltips_for_selected_spots_only=False,
+                on_event=handle_event,
+                animation=ft.Animation(
+                    duration=ft.Duration(milliseconds=600),
+                    curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
+                ),
+                spots=[
+                    fch.ScatterChartSpot(
+                        x=spot.x,
+                        y=spot.y,
+                        radius=spot.radius,
+                        color=ft.Colors.random(),
+                        show_tooltip=True,
+                        selected=True if spot.x == 43 else False,
+                    )
+                    for spot in spots
+                ],
+            ),
+        ]
     )
