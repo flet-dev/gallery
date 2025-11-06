@@ -109,8 +109,9 @@ def get_random_spots():
     ]
 
 
+@ft.component
 def example():
-    spots, set_spots = ft.use_state(get_random_spots())
+    spots, set_spots = ft.use_state(lambda: flutter_logo_spots)
 
     def handle_event(e: fch.ScatterChartEvent):
         if e.type == fch.ChartEventType.TAP_DOWN:
@@ -120,7 +121,7 @@ def example():
             #     else get_random_spots()
             # )
             print("Tapped down at:")
-            set_spots(flutter_logo_spots)
+            set_spots(lambda _: get_random_spots())
 
     return fch.ScatterChart(
         expand=True,
