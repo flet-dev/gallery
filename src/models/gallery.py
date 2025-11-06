@@ -80,6 +80,12 @@ class Gallery:
                 selected_icon=ft.Icons.INSERT_CHART_SHARP,
             ),
             ControlGroup(
+                name="multimedia",
+                label="Multimedia",
+                icon=ft.Icons.AUDIOTRACK_OUTLINED,
+                selected_icon=ft.Icons.AUDIOTRACK_SHARP,
+            ),
+            ControlGroup(
                 name="animations",
                 label="Animations",
                 icon=ft.Icons.ANIMATION_SHARP,
