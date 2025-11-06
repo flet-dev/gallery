@@ -103,12 +103,6 @@ class Gallery:
                 icon=ft.Icons.FORMAT_PAINT_OUTLINED,
                 selected_icon=ft.Icons.FORMAT_PAINT_SHARP,
             ),
-            ControlGroup(
-                name="contrib",
-                label="Contrib",
-                icon=ft.Icons.MY_LIBRARY_ADD_OUTLINED,
-                selected_icon=ft.Icons.LIBRARY_ADD_SHARP,
-            ),
         ]
     )
     _IGNORED_ENTRIES: ClassVar[set[str]] = {
