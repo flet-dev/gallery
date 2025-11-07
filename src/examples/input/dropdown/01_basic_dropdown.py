@@ -15,7 +15,7 @@ def example():
                     ft.DropdownOption("Green"),
                     ft.DropdownOption("Blue"),
                 ],
-                on_change=lambda e: set_dropdownvalue(e.control.value),
+                on_text_change=lambda e: set_dropdownvalue(e.control.value),
             ),
             ft.Text(value=f"Dropdown value is:  {dropdown_value}"),
         ]
