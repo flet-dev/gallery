@@ -237,11 +237,6 @@ def example():
         )
     )
 
-    # def on_mounted():
-    #     ft.context.page.theme_mode = ft.ThemeMode.LIGHT
-
-    # ft.on_mounted(on_mounted)
-
     return ft.Row(
         spacing=4,
         vertical_alignment=ft.CrossAxisAlignment.START,
