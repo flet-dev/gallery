@@ -4,9 +4,9 @@ name = "Cupertino colors"
 
 
 def example():
-    def copy_to_clipboard(e):
-        e.control.page.set_clipboard(f"ft.Colors.{e.control.content.value}")
-        e.control.page.open(
+    async def copy_to_clipboard(e):
+        await e.control.page.clipboard.set(f"ft.Colors.{e.control.content.value}")
+        e.control.page.show_dialog(
             ft.SnackBar(
                 ft.Text(f"Copied to clipboard: ft.Colors.{e.control.content.value}"),
                 open=True,

@@ -4,9 +4,10 @@ name = "PopupMenuButton example"
 
 
 def example():
+    checked, set_checked = ft.use_state(False)
+
     def check_item_clicked(e):
-        e.control.checked = not e.control.checked
-        e.control.update()
+        set_checked(not checked)
 
     pb = ft.PopupMenuButton(
         items=[
@@ -24,7 +25,7 @@ def example():
             ft.PopupMenuItem(),  # divider
             ft.PopupMenuItem(
                 content=ft.Text("Checked item"),
-                checked=False,
+                checked=checked,
                 on_click=check_item_clicked,
             ),
         ]

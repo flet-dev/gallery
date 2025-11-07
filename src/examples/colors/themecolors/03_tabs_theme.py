@@ -5,6 +5,7 @@ name = "Customize Tabs theme"
 
 def example():
     t = ft.Tabs(
+        expand=True,
         selected_index=1,
         length=3,
         animation_duration=300,
@@ -23,6 +24,7 @@ def example():
                     ]
                 ),
                 ft.TabBarView(
+                    expand=True,
                     controls=[
                         ft.Container(
                             content=ft.Text("This is Tab 1"),
@@ -36,7 +38,7 @@ def example():
                             content=ft.Text("This is Tab 3"),
                             alignment=ft.Alignment.CENTER,
                         ),
-                    ]
+                    ],
                 ),
             ]
         ),
