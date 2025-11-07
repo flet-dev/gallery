@@ -1,31 +1,37 @@
+from dataclasses import dataclass
+
 import flet as ft
 
 name = "Drag and drop colors"
 
 
+@dataclass
+@ft.observable
+class TargetState:
+    bgcolor: ft.Colors = ft.Colors.BLUE_GREY_100
+    is_drag_over: bool = False
+
+
 def example():
-    def drag_will_accept(e):
-        e.control.content.border = ft.Border.all(
-            2, ft.Colors.BLACK45 if e.data == "true" else ft.Colors.RED
-        )
-        # e.control.update()
+    target, _ = ft.use_state(lambda: TargetState())
 
-    def drag_accept(e):
-        src = e.control.page.get_control(e.src_id)
-        e.control.content.bgcolor = src.content.bgcolor
-        e.control.content.border = None
-        # e.control.update()
+    def on_will_accept(e: ft.DragWillAcceptEvent):
+        target.is_drag_over = True
 
-    def drag_leave(e):
-        e.control.content.border = None
-        # e.control.update()
+    def on_accept(e: ft.DragTargetEvent):
+        target.bgcolor = e.src.data
+        target.is_drag_over = False
+
+    def on_leave(e: ft.DragTargetLeaveEvent):
+        target.is_drag_over = False
 
     return ft.Row(
-        [
+        controls=[
             ft.Column(
-                [
+                controls=[
                     ft.Draggable(
                         group="color",
+                        data=ft.Colors.CYAN,
                         content=ft.Container(
                             width=50,
                             height=50,
@@ -41,6 +47,7 @@ def example():
                     ),
                     ft.Draggable(
                         group="color",
+                        data=ft.Colors.YELLOW,
                         content=ft.Container(
                             width=50,
                             height=50,
@@ -49,7 +56,8 @@ def example():
                         ),
                     ),
                     ft.Draggable(
-                        group="color1",
+                        group="color",
+                        data=ft.Colors.GREEN,
                         content=ft.Container(
                             width=50,
                             height=50,
@@ -62,15 +70,18 @@ def example():
             ft.Container(width=100),
             ft.DragTarget(
                 group="color",
+                on_will_accept=on_will_accept,
+                on_accept=on_accept,
+                on_leave=on_leave,
                 content=ft.Container(
                     width=50,
                     height=50,
-                    bgcolor=ft.Colors.BLUE_GREY_100,
+                    bgcolor=target.bgcolor,
+                    border=ft.Border.all(2, ft.Colors.BLACK45)
+                    if target.is_drag_over
+                    else None,
                     border_radius=5,
                 ),
-                on_will_accept=drag_will_accept,
-                on_accept=drag_accept,
-                on_leave=drag_leave,
             ),
         ]
     )
