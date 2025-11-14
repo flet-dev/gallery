@@ -25,7 +25,7 @@ def Example(example: ExampleItem):
                                 color=ft.Colors.ON_SURFACE_VARIANT,
                             ),
                             url=ft.Url(
-                                f"https://github.com/flet-dev/examples/blob/main/python/apps/controls-gallery/examples/{example.file_name}",
+                                f"https://github.com/flet-dev/gallery/blob/main/src/examples/{example.file_name}",
                                 ft.UrlTarget.BLANK,
                             ),
                         ),
