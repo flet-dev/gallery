@@ -8,8 +8,10 @@ authors = [
     { name = "Flet developer", email = "you@example.com" }
 ]
 dependencies = [
-  "flet-charts>=0.70.0.dev6444",
-  "flet>=0.70.0.dev0",
+  "flet-charts",
+  "flet-audio",
+  "flet-video",
+  "flet",
 ]
 
 [tool.flet]
@@ -24,8 +26,6 @@ path = "src"
 
 [dependency-groups]
 dev = [
-    "flet[all]>=0.70.0.dev0",
+    "flet[all]",
 ]
 
-[tool.uv]
-prerelease = "allow"

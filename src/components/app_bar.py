@@ -15,7 +15,7 @@ def AppBar():
         # bgcolor=ft.Colors.INVERSE_PRIMARY,
         actions=[
             ft.Container(
-                padding=10, content=ft.Text(f"Version: {flet.version.version}")
+                padding=10, content=ft.Text(f"Version: {flet.version.flet_version}")
             ),
         ],
     )
