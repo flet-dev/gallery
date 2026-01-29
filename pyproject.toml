@@ -12,6 +12,7 @@ dependencies = [
   "flet-audio",
   "flet-video",
   "flet",
+  "objgraph"
 ]
 
 [tool.flet]
