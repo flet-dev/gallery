@@ -1,6 +1,7 @@
 import flet as ft
 
 from components.app_bar import AppBar
+from components.diagnostics_view import DiagnosticsView
 from components.gallery_view import GalleryView
 from contexts.route import RouteContext, RouteContextValue
 from contexts.theme import ThemeContext, ThemeContextValue
@@ -74,7 +75,11 @@ def App(gallery: Gallery) -> ft.View:
             lambda: ft.View(
                 route="/",
                 appbar=AppBar(),
-                controls=[GalleryView(gallery)],
+                controls=[
+                    DiagnosticsView(key="diagnostics-view")
+                    if app.route == "/__diag"
+                    else GalleryView(gallery, key="gallery-view")
+                ],
             ),
         ),
     )
