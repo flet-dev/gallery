@@ -30,3 +30,5 @@ dev = [
     "flet[all]",
 ]
 
+[tool.uv]
+prerelease = "allow"

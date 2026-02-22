@@ -46,7 +46,11 @@ def _now_iso() -> str:
 
 
 def _is_control_instance(obj: Any) -> bool:
-    return hasattr(obj, "_get_control_name") and hasattr(obj, "_id")
+    # Flet controls/components expose internal control metadata as `_c` + `_i`.
+    # Some wrappers may also expose `_get_control_name`.
+    return (hasattr(obj, "_c") and hasattr(obj, "_i")) or hasattr(
+        obj, "_get_control_name"
+    )
 
 
 def _iter_possible_controls(value: Any):
@@ -64,6 +68,28 @@ def _iter_possible_controls(value: Any):
             yield from _iter_possible_controls(item)
 
 
+def _iter_control_children(control: Any):
+    # Flet Component wrappers render actual controls into `_b`.
+    body = getattr(control, "_b", None)
+    if body is not None:
+        yield from _iter_possible_controls(body)
+
+    # Fast path for common control containers.
+    for attr in ("content", "controls", "views", "leading", "trailing"):
+        value = getattr(control, attr, None)
+        if value is not None:
+            yield from _iter_possible_controls(value)
+
+    # Fallback: inspect all dataclass/object fields.
+    try:
+        control_values = vars(control).values()
+    except TypeError:
+        control_values = ()
+
+    for value in control_values:
+        yield from _iter_possible_controls(value)
+
+
 class MemoryDiagnostics:
     def __init__(self) -> None:
         self.enabled = _env_bool("MEM_DIAG", False)
@@ -73,6 +99,8 @@ class MemoryDiagnostics:
         self.trace_top = max(1, _env_int("MEM_DIAG_TRACE_TOP", 20))
         self.control_scan_max_nodes = max(1000, _env_int("MEM_DIAG_CONTROL_SCAN_MAX_NODES", 10000))
         self.collect_on_sample = _env_bool("MEM_DIAG_COLLECT_ON_SAMPLE", False)
+        self.control_scan_enabled = _env_bool("MEM_DIAG_CONTROL_SCAN", False)
+        self.gc_objects_enabled = _env_bool("MEM_DIAG_GC_OBJECTS", False)
         self.type_hist_enabled = _env_bool("MEM_DIAG_TYPE_HIST", False)
         self.type_hist_interval_sec = max(
             60, _env_int("MEM_DIAG_TYPE_HIST_INTERVAL_SEC", 900)
@@ -215,13 +243,18 @@ class MemoryDiagnostics:
         if self.collect_on_sample:
             gc.collect()
 
-        scan_stats = self._scan_page_controls()
+        scan_stats = (
+            self._scan_page_controls()
+            if self.control_scan_enabled
+            else {"scanned_nodes": 0, "unique_objects": 0, "truncated": 0}
+        )
         summary = self._collect_summary()
+        gc_objects = len(gc.get_objects()) if self.gc_objects_enabled else None
         sample = {
             "ts": _now_iso(),
             "rss_bytes": self._rss_bytes(),
             "gc_counts": gc.get_count(),
-            "gc_objects": len(gc.get_objects()),
+            "gc_objects": gc_objects,
             "sessions_started": summary["sessions_started"],
             "sessions_disconnected": summary["sessions_disconnected"],
             "pages_seen": summary["pages_seen"],
@@ -304,14 +337,8 @@ class MemoryDiagnostics:
                 except TypeError:
                     pass
 
-                try:
-                    control_values = vars(control).values()
-                except TypeError:
-                    control_values = ()
-
-                for value in control_values:
-                    for child in _iter_possible_controls(value):
-                        stack.append(child)
+                for child in _iter_control_children(control):
+                    stack.append(child)
 
             if scanned_nodes >= self.control_scan_max_nodes:
                 break
