@@ -31,6 +31,3 @@ dev = [
     "flet-cli",
     "flet-desktop",
 ]
-
-[tool.uv]
-prerelease = "allow"
