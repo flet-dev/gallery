@@ -8,10 +8,10 @@ ENV UV_PYTHON_DOWNLOADS=never
 ENV UV_LINK_MODE=copy
 
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev --no-install-project --python /usr/local/bin/python
+RUN uv sync --frozen --no-dev --no-install-project
 
 COPY . .
-RUN uv sync --frozen --no-dev --python /usr/local/bin/python
+RUN uv sync --frozen --no-dev
 
 EXPOSE 8080
 
