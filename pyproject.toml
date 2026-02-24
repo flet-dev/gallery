@@ -12,6 +12,7 @@ dependencies = [
   "flet-audio",
   "flet-video",
   "flet",
+  "flet-web",
   "objgraph"
 ]
 
@@ -27,7 +28,8 @@ path = "src"
 
 [dependency-groups]
 dev = [
-    "flet[all]",
+    "flet-cli",
+    "flet-desktop",
 ]
 
 [tool.uv]

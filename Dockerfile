@@ -2,10 +2,14 @@ FROM python:3-alpine
 
 WORKDIR /app
 
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+
 COPY . .
+RUN uv sync --frozen --no-dev
 
-RUN pip install --no-cache-dir --pre .
+EXPOSE 8080
 
-EXPOSE 8000
-
-CMD ["python", "src/main.py"]
+CMD ["/app/.venv/bin/python", "src/main.py"]
