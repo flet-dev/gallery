@@ -13,6 +13,9 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY . .
 RUN uv sync --frozen --no-dev
 
+ARG APP_VERSION=dev
+ENV APP_VERSION=${APP_VERSION}
+
 EXPOSE 8080
 
 CMD ["/app/.venv/bin/python", "src/main.py"]
