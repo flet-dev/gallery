@@ -1,0 +1,45 @@
+name: Deploy to Fly.io
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: fly-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Compute app version
+        id: app_version
+        run: |
+          APP_VERSION=$(python - <<'PY'
+          import tomllib
+          import os
+
+          with open("pyproject.toml", "rb") as f:
+              data = tomllib.load(f)
+          base = data["project"]["version"]
+          parts = base.split(".")
+          if len(parts) != 3:
+              raise SystemExit(f"Expected semantic version 'X.Y.Z', got: {base}")
+          print(f"{parts[0]}.{parts[1]}.{os.environ['GITHUB_RUN_NUMBER']}")
+          PY
+          )
+          echo "value=${APP_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only --config fly.toml --build-arg APP_VERSION=${{ steps.app_version.outputs.value }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

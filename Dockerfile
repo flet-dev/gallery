@@ -1,11 +1,21 @@
-FROM python:3-alpine
+FROM python:3.14-slim
 
 WORKDIR /app
 
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ENV UV_PYTHON_DOWNLOADS=never
+ENV UV_LINK_MODE=copy
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+
 COPY . .
+RUN uv sync --frozen --no-dev
 
-RUN pip install --no-cache-dir .
+ARG APP_VERSION=dev
+ENV APP_VERSION=${APP_VERSION}
 
-EXPOSE 8000
+EXPOSE 8080
 
-CMD ["python", "src/main.py"]
+CMD ["/app/.venv/bin/python", "src/main.py"]
